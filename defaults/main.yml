@@ -1,0 +1,7 @@
+---
+
+sysctl_list: []
+# - name:
+#   value:
+#   state
+sysctl_reload: True
