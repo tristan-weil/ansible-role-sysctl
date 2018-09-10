@@ -7,8 +7,8 @@ An Ansible Role to update sysctl parameters.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
     sysctl_list: []                                 # the list of sysctl parameters
-      - name:                                       # the name of the parameter
-        value:                                      # the value
+      - name: [mandatory]                           # the name of the parameter
+        value: [mandatory]                          # the value
         state: present                              # present|absent
 
 A list of sysctl parameters can be used to update the machine behaviour.
