@@ -6,4 +6,4 @@
     value: "{{ item.value }}"
     state: "{{ item.state | default(omit) }}"
     reload: "{{ sysctl_reload }}"
-  with_items: "{{ sysctl_list }}"
+  loop: "{{ sysctl_list }}"
