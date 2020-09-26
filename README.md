@@ -58,8 +58,8 @@ None.
 
 ## Supported platforms
 
-See [meta/main.yml](https://github.com/tristan-weil/ansible-role-verify_artifact/blob/master/meta/main.yml)
+See [meta/main.yml](https://github.com/tristan-weil/ansible-role-sysctl/blob/master/meta/main.yml)
 
 ## License
 
-See [LICENSE.md](https://github.com/tristan-weil/ansible-role-verify_artifact/blob/master/LICENSE.md)
+See [LICENSE.md](https://github.com/tristan-weil/ansible-role-sysctl/blob/master/LICENSE.md)
