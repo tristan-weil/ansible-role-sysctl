@@ -4,35 +4,23 @@
   name: 'Verify'
   become: True
   gather_facts: True
+  vars:
+    __verify_sysctlcmd_by_os_family:
+      Debian: 'cat /proc/sys/vm/swappiness | grep -q "17"'
+      OpenBSD: 'sysctl kern.maxproc | grep -q "kern.maxproc=1017"'
+
+    __verify_sysctlcontent_by_os_family:
+      Debian: 'vm.swappiness=17'
+      OpenBSD: 'kern.maxproc=1017'
 
   tasks:
-    - name: 'slurp /etc/sysctl.conf'
+    - name: 'Check /etc/sysctl.conf content'
       slurp:
         path: '/etc/sysctl.conf'
       register: __verify_file
+      failed_when: not __verify_file['content'] | b64decode | regex_search(__verify_sysctlcontent_by_os_family[ ansible_facts['os_family'] ], multiline=True)
 
-    - block:
-        - name: 'check /etc/sysctl content'
-          assert:
-            that:
-              - __verify_file['content'] | b64decode | regex_search("kern.maxproc=1017", multiline=True)
-
-        - name: 'check sysctl'
-          shell: |
-            sysctl kern.maxproc | grep -q "kern.maxproc=1017"
-          register: __verify_cmd
-          failed_when: __verify_cmd.rc != 0
-      when: ansible_facts['os_family'] == 'OpenBSD'
-
-    - block:
-        - name: 'check /etc/sysctl content'
-          assert:
-            that:
-              - __verify_file['content'] | b64decode | regex_search("vm.swappiness=17", multiline=True)
-
-        - name: 'check /proc/sys/vm/swappiness'
-          shell: |
-            cat /proc/sys/vm/swappiness | grep -q "17"
-          register: __verify_cmd
-          failed_when: __verify_cmd.rc != 0
-      when: ansible_facts['os_family'] == 'Debian'
+    - name: 'Check sysctl command'
+      shell: "{{ __verify_sysctlcmd_by_os_family[ ansible_facts['os_family'] ] }}"
+      register: __verify_cmd
+      failed_when: __verify_cmd.rc != 0
