@@ -1,0 +1,38 @@
+---
+
+- hosts: all
+  name: 'Verify'
+  become: True
+  gather_facts: True
+
+  tasks:
+    - name: 'slurp /etc/sysctl.conf'
+      slurp:
+        path: '/etc/sysctl.conf'
+      register: __verify_file
+
+    - block:
+        - name: 'check /etc/sysctl content'
+          assert:
+            that:
+              - __verify_file['content'] | b64decode | regex_search("kern.maxproc=1017", multiline=True)
+
+        - name: 'check sysctl'
+          shell: |
+            sysctl kern.maxproc | grep -q "kern.maxproc=1017"
+          register: __verify_cmd
+          failed_when: __verify_cmd.rc != 0
+      when: ansible_facts['os_family'] == 'OpenBSD'
+
+    - block:
+        - name: 'check /etc/sysctl content'
+          assert:
+            that:
+              - __verify_file['content'] | b64decode | regex_search("vm.swappiness=17", multiline=True)
+
+        - name: 'check /proc/sys/vm/swappiness'
+          shell: |
+            cat /proc/sys/vm/swappiness | grep -q "17"
+          register: __verify_cmd
+          failed_when: __verify_cmd.rc != 0
+      when: ansible_facts['os_family'] == 'Debian'

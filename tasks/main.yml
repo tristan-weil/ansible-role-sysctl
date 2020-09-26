@@ -1,6 +1,6 @@
 ---
 
-- name: add new sysctl values
+- name: 'add new sysctl values'
   sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"

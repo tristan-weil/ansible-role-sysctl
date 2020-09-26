@@ -3,5 +3,6 @@
 sysctl_list: []
 # - name:
 #   value:
-#   state
+#   state:
+
 sysctl_reload: True

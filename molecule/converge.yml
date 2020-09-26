@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  name: 'Converge'
+  become: True
+  vars:
+    __verify_vars:
+      Debian:
+        - name: 'vm.swappiness'
+          value: 17
+
+      OpenBSD:
+        - name: 'kern.maxproc'
+          value: 1017
+
+  tasks:
+    - include_role:
+        name: 'ansible-role-sysctl'
+      vars:
+        sysctl_list: "{{ __verify_vars[ ansible_facts['os_family'] ] }}"
